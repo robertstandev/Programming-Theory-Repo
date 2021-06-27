@@ -20,7 +20,7 @@ public abstract class Animal : MonoBehaviour
 
     private void Update()
     {
-
+        if (isMove) Move();
     }
 
     public virtual void Action(Button btn)
@@ -29,5 +29,26 @@ public abstract class Animal : MonoBehaviour
 
         startTime = Time.time;
         distanceLength = Vector3.Distance(startPosition, movePosition);
+
+        StartCoroutine(Waiting(btn));
+    }
+
+    //ABSTRACTION
+    private void Move()
+    {   
+        float distanceCovered = (Time.time - startTime) * speed;
+
+        float fractionOfJourney = distanceCovered / distanceLength;
+
+        transform.position = Vector3.Lerp(startPosition, movePosition, fractionOfJourney);
+    }
+
+    private IEnumerator Waiting(Button btn)
+    {
+        yield return new WaitForSeconds(3f);
+
+        transform.position = startPosition;
+        isMove = false;
+        btn.interactable = true;
     }
 }
